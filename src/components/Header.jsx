@@ -1,9 +1,25 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { PageHeader, Button, } from "antd";
 
 function Header() {
   return (
     <div className="header">
+      <PageHeader
+        className="site-page-header"
+        extra={[
+          <Link to="/">
+            <Button key="3">Home</Button>
+          </Link>,
+          <Link to="catalog/">
+            <Button key="2">Catalog</Button>
+          </Link>,
+          <Link to="cart/">
+            <Button key="1">Cart</Button>
+          </Link>,
+        ]}
+      />
+      ,
       <div className="container">
         <div className="header__logo">
           <img width="38" src="./img/pizza-logo.svg" alt="Pizza logo" />
@@ -17,7 +33,7 @@ function Header() {
         <Link to="/cart">
           <div className="header__cart">
             <a href="/cart.html" className="button button--cart">
-              <span>520 ₽</span>
+              <span>Корзина </span>
               <div className="button__delimiter"></div>
               <svg
                 width="18"
@@ -48,7 +64,6 @@ function Header() {
                   strokeLinejoin="round"
                 />
               </svg>
-              <span>3</span>
             </a>
           </div>
         </Link>

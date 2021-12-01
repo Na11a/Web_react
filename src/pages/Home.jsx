@@ -1,45 +1,57 @@
 import { React, useState, useEffect } from "react";
-import { SortPopup, Categories, PizzaCart } from "../components";
+import { getPizzas } from "../features/catchData";
+import { Spin } from "antd";
+import { Card, List, Button } from "antd";
+const { Meta } = Card;
 
-const Home = ({ addPizza, deletePizza }) => {
+const Home = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [pizzas, setPizzas] = useState([]);
-  const [currentPizzas, setCurrentPizzas] = useState([]);
-  const selectCategory = (category) => {
-    category === null
-      ? setCurrentPizzas(pizzas)
-      : setCurrentPizzas(pizzas.filter((pizza) => pizza.category === category));
-  };
+  const startLoad = 4;
+  const nextLoad = 4;
+  const [newLoad, setNewLoad] = useState(0);
   useEffect(() => {
-    fetch("http://localhost:3000/db.json")
-      .then((response) => response.json())
-      .then((json) => {
-        setCurrentPizzas(json.pizzas);
-        setPizzas(json.pizzas);
-      });
+    getPizzas().then((data) => {
+      setPizzas(data.slice(0, startLoad));
+      setIsLoading(false);
+    });
   }, []);
+  useEffect(() => {
+    getPizzas().then((data) => {
+      setPizzas(pizzas.concat(data.slice(newLoad, newLoad + nextLoad)));
+      setIsLoading(false);
+    });
+  }, [newLoad]);
+  const LoadMoreSelect = () => {
+    setIsLoading(true);
+    setNewLoad(newLoad + nextLoad);
+  };
   return (
-    <div className="container">
-      <div className="content__top">
-        <div className="categories">
-          <Categories
-            items={["Мясные", "Вегетарианская", "Гриль", "Острые", "Закрытые"]}
-            selectCategory={selectCategory}
-          />
-        </div>
-        <SortPopup items={["популярности", "цене", "алфавиту"]} />
-      </div>
-      <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">
-        {currentPizzas &&
-          currentPizzas.map((pizza) => (
-            <PizzaCart
-              key={pizza.id}
-              pizza={pizza}
-              addPizza={addPizza}
-              deletePizza={deletePizza}
-            />
-          ))}
-      </div>
+    <div className="content__items">
+      <List
+        itemLayout="horizontal"
+        className="demo-loadmore-list"
+        grid={{
+          gutter: 120,
+        }}
+        dataSource={pizzas}
+        renderItem={(item) => (
+          <List.Item>
+            <Card
+              hoverable
+              style={{ width: 240 }}
+              cover={<img alt={item.name} src={item.imageUrl} />}
+            >
+              <Meta title={item.name} description={item.price} />
+            </Card>
+          </List.Item>
+        )}
+      />
+      ,
+      <Button type="primary" size="large" onClick={() => LoadMoreSelect()}>
+        Load More
+      </Button>
+      <Spin size="large" spinning={isLoading}></Spin>
     </div>
   );
 };

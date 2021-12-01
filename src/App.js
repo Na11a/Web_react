@@ -1,6 +1,6 @@
 import { React, useState } from "react";
 import "./scss/app.scss";
-import { Home, Cart } from "./pages";
+import { Catalog, Cart,Home, PizzaPage} from "./pages";
 import { Header } from "./components";
 import { Route, Routes } from "react-router-dom";
 
@@ -13,7 +13,7 @@ function App() {
   };
   const deletePizza = (pizza) => {
     let new_order = order;
-    setOrder(new_order.filter((item) => item.id !== pizza.id))
+    setOrder(new_order.filter((item) => item.id !== pizza.id));
   };
   return (
     <div className="wrapper">
@@ -21,11 +21,13 @@ function App() {
       <div className="content">
         <Routes>
           <Route
-            path="/"
-            element={<Home addPizza={addPizza} deletePizza={deletePizza} />}
+            path="/catalog"
+            element={<Catalog addPizza={addPizza} deletePizza={deletePizza} />}
             exact
           />
           <Route path="/cart" element={<Cart order={order} />} exact />
+          <Route path="/" element={<Home />} exact />
+          <Route path="/pizza/:id" element={<PizzaPage />} exact />
         </Routes>
       </div>
     </div>

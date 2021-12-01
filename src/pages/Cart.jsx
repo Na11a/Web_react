@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { PizzaOrder } from "../components";
 const Cart = ({ order }) => {
-  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(null);
   useEffect(() => {
     if (order.length !== 0) {
       setTotalPrice(
@@ -11,8 +11,7 @@ const Cart = ({ order }) => {
   }, []);
   return (
     <div className="content__items">
-      <h1>total sum = {totalPrice}</h1>
-
+      <div>{totalPrice && <h1>total sum = {totalPrice}</h1>}</div>
       {order &&
         order.map((pizza) => <PizzaOrder pizza={pizza} key={pizza.id} />)}
     </div>

@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { Button } from "./index";
 import classNames from "classnames";
+import { Link } from "react-router-dom";
 const PizzaCart = ({ pizza, addPizza, deletePizza }) => {
   const pizzasType = ["традиционное", "тонкое"];
   const sizes = [26, 30, 40];
@@ -24,21 +25,51 @@ const PizzaCart = ({ pizza, addPizza, deletePizza }) => {
     setActiveSize(size);
   };
   useEffect(() => {
-    setCurrentPrice(countPrice());
+    countPrice() !== "NaN"
+      ? setCurrentPrice(countPrice())
+      : setCurrentPrice(null);
   }, [activeSize, activeType]);
   const onPizzaSelect = (pizza) => {
-    let new_pizza = {...pizza}
+    let new_pizza = { ...pizza };
     new_pizza.price = currentPrice;
     new_pizza.type = activeType;
     new_pizza.size = activeSize;
     setButtonStatus(!buttonStatus);
     buttonStatus === true ? addPizza(new_pizza) : deletePizza(new_pizza);
   };
+  const priceBlock = () => {
+    if (currentPrice) {
+      return (
+        <div className="pizza-block__bottom">
+          <div className="pizza-block__price">{currentPrice} ₽</div>
+          <Button outline onClick={() => onPizzaSelect(pizza)}>
+            {buttonStatus === true ? "Добавить" : "Удалить"}
+          </Button>
+        </div>
+      );
+    } else {
+      return (
+        <div className="pizza-block__bottom">
+          <div className="pizza-block__price">0₽</div>
+          <Button outline>{"Пиццы нету, иди домой"}</Button>
+        </div>
+      );
+    }
+  };
+  console.log(currentPrice);
   return (
     <div className="pizza-block">
-      <img className="pizza-block__image" src={pizza.imageUrl} alt="Pizza" />
+      <img
+        className="pizza-block__image"
+        src={pizza.imageUrl}
+        onError="localhost:3000/8b9db1d-zenoviy-veres.jpg"
+      />
       <h4 className="pizza-block__title">{pizza.name}</h4>
       <div className="pizza-block__selector">
+        <Link to={`/pizza/${pizza.id}`}>
+          <Button>View More</Button>
+        </Link>
+
         <ul>
           {pizzasType.map((name, index) => (
             <li
@@ -68,12 +99,7 @@ const PizzaCart = ({ pizza, addPizza, deletePizza }) => {
           ))}
         </ul>
       </div>
-      <div className="pizza-block__bottom">
-        <div className="pizza-block__price">{currentPrice} ₽</div>
-        <Button outline onClick={() => onPizzaSelect(pizza)}>
-          {buttonStatus === true ? "Добавить" : "Удалить"}
-        </Button>
-      </div>
+      {priceBlock()}
     </div>
   );
 };

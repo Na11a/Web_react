@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-function SortPoup({ items }) {
+function SortPoup({ items, activeValue }) {
   const [visiblePopup, setVisiblePopup] = useState(false);
   const [hoverItem, setHoverItem] = useState(null);
   const [activeItem, setActiveItem] = useState(items[0]);
@@ -9,7 +9,7 @@ function SortPoup({ items }) {
   const handleOutside = (e) => {
     if (!e.composedPath().includes(sortRef.current)) {
       setVisiblePopup(false);
-      setPointRotate(false)
+      setPointRotate(false);
     }
   };
   const onHoverItem = (index) => {
@@ -18,6 +18,7 @@ function SortPoup({ items }) {
   const selectItem = (name) => {
     setActiveItem(name);
     setVisiblePopup(false);
+    activeValue(name);
   };
   useEffect(() => {
     document.body.addEventListener("click", handleOutside);
@@ -30,7 +31,7 @@ function SortPoup({ items }) {
     <div ref={sortRef} className="sort">
       <div className="sort__label">
         <svg
-          className = {pointRotate ? 'rotate' : ''}
+          className={pointRotate ? "rotate" : ""}
           width="10"
           height="6"
           viewBox="0 0 10 6"

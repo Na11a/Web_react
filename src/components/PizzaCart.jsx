@@ -2,7 +2,11 @@ import { React, useState, useEffect } from "react";
 import { Button } from "./index";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
-const PizzaCart = ({ pizza, addPizza, deletePizza }) => {
+import {useDispatch} from "react-redux"
+import {addPizza,deletePizza} from "../features/cartReducer"
+const PizzaCart = ({ pizza }) => {
+  const dispatch = useDispatch()
+
   const pizzasType = ["традиционное", "тонкое"];
   const sizes = [26, 30, 40];
   const priceSizeCoefs = { 26: 1, 30: 1.2, 40: 1.5 };
@@ -35,7 +39,7 @@ const PizzaCart = ({ pizza, addPizza, deletePizza }) => {
     new_pizza.type = activeType;
     new_pizza.size = activeSize;
     setButtonStatus(!buttonStatus);
-    buttonStatus === true ? addPizza(new_pizza) : deletePizza(new_pizza);
+    buttonStatus === true ? dispatch(addPizza(new_pizza)) : dispatch(deletePizza(new_pizza));
   };
   const priceBlock = () => {
     if (currentPrice) {
